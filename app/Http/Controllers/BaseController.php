@@ -7,8 +7,24 @@ use App\Models;
 
 class BaseController extends Controller
 {
+    use \RachidLaasri\LaravelInstaller\Helpers\MigrationsHelper;
+
     public function index(Request $request)
     {
+        $migrations = $this->getMigrations();
+        try {
+            $dbMigrations = $this->getExecutedMigrations();
+        } catch (\Illuminate\Database\QueryException $e) {
+            $dbMigrations = [];
+        }
+
+        $todo = count($migrations) - count($dbMigrations);
+        if ($todo == count($migrations)) {
+            return view('vendor.installer.welcome');
+        } elseif ($todo != 0) {
+            return view('vendor.installer.update.overview', ['numberOfUpdatesPending' => $todo]);
+        }
+
         $args['books'] = Models\Book::orderBy('created_at', 'desc')->paginate(10);
         $args['authors'] = Models\Author::orderBy('created_at', 'desc')->paginate(10);
 
