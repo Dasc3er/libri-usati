@@ -1,0 +1,49 @@
+{% extends "layout.twig" %}
+
+{% block title %}{{ 'authors.title'|trans }}{% endblock %}
+{% block content %}
+			<div class="jumbotron">
+				<div class="container text-center">
+					<h1><i class="fas fa-pencil"></i> {{ 'authors.header'|trans }}</h1>
+					<p>{{ 'authors.text'|trans }}</p>
+{% if auth.check() %}
+                    <p><a class="btn btn-success" href="{{ route('new-author', {'locale': locale}) }}"><i class="fas fa-plus"></i> {{ 'base.new'|trans }}</a></p>
+{% endif %}
+				</div>
+			</div>
+			<hr>
+			<div class="container">
+{% if results is not empty %}
+                <table class="table table-hover table-striped">
+					<thead>
+						<tr>
+							<th>{{ 'base.name&surname'|trans }}</th>
+{% if auth.isAdmin() %}
+
+							<th>{{ 'base.options'|trans }}</th>
+{% endif %}
+						</tr>
+					</thead>
+					<tbody>
+{% for result in results %}
+						<tr>
+                            <td><a href="{{ route('author', {'locale': locale, 'id': result.id }) }}">{{ result.name }} {{ result.surname }}</a></td>
+{% if result.user_id == auth.getUser().id or auth.isAdmin() %}
+
+							<td>
+                                <a class="btn btn-info" href="{{ route('edit-author', {'locale': locale, 'id': result.id }) }}"><i class="fas fa-pencil"></i> {{ 'base.edit'|trans }}</a>
+                                <a class="btn btn-danger" href="{{ route('delete-author', {'locale': locale, 'id': result.id }) }}"><i class="fas fa-trash"></i> {{ 'base.delete'|trans }}</a>
+                            </td>
+{% endif %}
+						</tr>
+{% endfor %}
+{% else %}
+        				<p>{{ 'base.no-result'|trans }}</p>
+{% endif %}
+					</tbody>
+				</table>
+
+                {{ results.links()|raw }}
+
+			</div>
+{% endblock %}

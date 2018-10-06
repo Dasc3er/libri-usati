@@ -1,0 +1,79 @@
+{% extends "layout.twig" %}
+
+{% block title %}{{ 'profile.header'|trans({':name': user.name}) }}{% endblock %}
+{% block content %}
+			<div class="jumbotron">
+				<div class="container text-center">
+					<h1><i class="fas fa-user"></i> {{ 'profile.header'|trans({':name': user.name}) }}</h1>
+					<p>{{ 'profile.text'|trans }}</p>
+{% if user.id != auth.getUser().id and auth.isAdmin() %}
+                    <hr>
+{% if delete %}
+					<p>{{ 'base.deleteQuestion'|trans }}</p>
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6 text-left">
+                            <a class="btn btn-success" href="{{ route('profile', {'locale': locale, 'id': user.id }) }}"><i class="fas fa-arrow-left"></i> {{ 'base.cancel'|trans }}</a>
+                        </div>
+                        <div class="col-xs-12 col-md-6 text-right">
+                            <form action="{{ route('delete-user', {'locale': locale, 'id': user.id}) }}" method="post" role="form">
+                                {{ form.csrf_field(csrf) }}
+                                <button class="btn btn-danger" type="submit"><i class="fas fa-trash"></i> {{ 'base.delete'|trans }}</button>
+                            </form>
+                        </div>
+                    </div>
+{% else %}
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <a class="btn btn-danger" href="{{ route('delete-user', {'locale': locale, 'id': user.id }) }}"><i class="fas fa-trash"></i> {{ 'base.delete'|trans }}</a>
+                        </div>
+                    </div>
+{% endif %}
+{% endif %}
+				</div>
+			</div>
+			<hr>
+			<div class="container">
+{% for result in books %}
+{% if loop.index is odd %}
+				<div class="row">
+{% endif %}
+					<div class="col-xs-12 col-md-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading"><a href="{{ route('book', {'locale': locale, 'id': result.id }) }}">{{ result.title }}</a>, {{ 'base.property'|trans({':name': result.user.name}) }}</div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-3">
+                                        <img src="{{ uploads.getUrl(result.image) }}" class="img-responsive">
+                                    </div>
+                                    <div class="col-xs-12 col-md-9">
+                                        <p><strong>{{ 'base.authors'|trans }}</strong>: {% for row in result.authors %}{{ row.name }} {{ row.surname }}{%if not loop.last %}, {% else %}.{% endif %}{% else %}{{ 'base.no-authors'|trans }}.{% endfor %}
+                                        <p><strong>{{ 'base.price'|trans }}</strong>: {{ result.price }} {{ 'base.euro'|trans }}.</p>
+{% if result.isbn %}
+                                        <p>{{ 'base.isbn'|trans }}: {{ result.isbn }}</p>
+{% endif %}
+
+                                    </div>
+                                </div>
+
+{% if result.user_id == auth.getUser().id or auth.isAdmin() %}
+                                <hr>
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-6">
+                                        <a class="btn btn-info" href="{{ route('edit-book', {'locale': locale, 'id': result.id }) }}"><i class="fas fa-pencil"></i> {{ 'base.edit'|trans }}</a>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6">
+                                        <a class="btn btn-danger pull-right" href="{{ route('delete-book', {'locale': locale, 'id': result.id }) }}"><i class="fas fa-trash"></i> {{ 'base.delete'|trans }}</a>
+                                    </div>
+                                </div>
+{% endif %}
+                            </div>
+                        </div>
+					</div>
+{% if loop.index is even or loop.last %}
+				</div>
+{% endif %}
+{% else %}
+        		<p>{{ 'base.no-result'|trans }}</p>
+{% endfor %}
+			</div>
+{% endblock %}

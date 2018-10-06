@@ -1,0 +1,34 @@
+{% extends "layout.twig" %}
+
+{% block title %}{{ 'visits.title'|trans }}{% endblock %}
+{% block content %}
+			<div class="jumbotron">
+				<div class="container text-center">
+					<h1><i class="fas fa-wrench"></i> {{ 'visits.header'|trans }}</h1>
+					<p>{{ 'visits.text'|trans }}</p>
+				</div>
+			</div>
+			<div class="container">
+				<table class="table table-hover scroll">
+					<thead>
+						<tr>
+							<th>{{ 'base.info'|trans }}</th>
+							<th>{{ 'base.IP-address'|trans }}</th>
+							<th>{{ 'base.date'|trans }}</th>
+						</tr>
+					</thead>
+					<tbody>
+{% for result in results %}
+						<tr>
+							<td>{{ result.browser }}</td>
+							<td>{{ result.address }}</td>
+							<td>{{ result.created_at }}</td>
+						</tr>
+{% endfor %}
+					</tbody>
+				</table>
+                {{ results.links()|raw }}
+				<p>{{ 'visits.total'|trans }}: {{ results|length }}</p>
+				<p><a href="{{ route('reset-visits', {'locale': locale}) }}" class="btn btn-danger">{{ 'visits.reset'|trans }}</a></p>
+			</div>
+{% endblock %}

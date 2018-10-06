@@ -1,0 +1,28 @@
+{% extends "layout.twig" %}
+{% import "macros/form.twig" as form %}
+
+{% block title %}{{ 'authors.form.title'|trans }}{% endblock %}
+{% block content %}
+			<div class="jumbotron">
+				<div class="container text-center">
+					<h1><i class="fas fa-edit"></i> {{ 'authors.form.header'|trans }}</h1>
+					<p>{{ 'authors.form.text'|trans }}</p>
+				</div>
+			</div>
+			<hr>
+			<div class="container">
+				<form action="{% if result %}{{ route('edit-author', {'locale': locale, 'id': result.id}) }}{% else %}{{ route('new-author', {'locale': locale}) }}{% endif %}" method="post" class="form-horizontal" role="form">
+					{{ form.csrf_field(csrf) }}
+
+                    {{ form.field({name: 'name', placeholder: 'base.name'|trans, value: result.name, required: true, autofocus: true, form_horizontal: true}) }}
+
+                    {{ form.field({name: 'surname', placeholder: 'base.surname'|trans, value: result.surname, required: true,form_horizontal: true}) }}
+
+					<div class="row">
+						<div class="col-xs-12 col-md-3 col-md-push-9">
+							<button class="btn btn-block btn-success" type="submit" id="button"><i class="fas fa-check"></i> {{ 'base.save'|trans }}</button>
+						</div>
+					</div>
+				</form>
+			</div>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "layout.twig" %}
+
+{% block title %}{{ 'users.title'|trans }}{% endblock %}
+{% block content %}
+			<div class="jumbotron">
+				<div class="container text-center">
+					<h1><i class="fas fa-wrench"></i> {{ 'users.header'|trans }}</h1>
+					<p>{{ 'users.text'|trans }}</p>
+				</div>
+			</div>
+			<div class="container">
+{% if results is not empty %}
+
+				<table class="table table-hover scroll">
+					<thead>
+						<tr>
+							<th>{{ 'base.name'|trans }}</th>
+							<th>{{ 'base.username'|trans }}</th>
+							<th>{{ 'base.book-number'|trans }}</th>
+							<th>{{ 'base.created_at'|trans }}</th>
+							<th>{{ 'base.options'|trans }}</th>
+						</tr>
+					</thead>
+					<tbody>
+{% for result in results %}
+						<tr>
+                            <td><a href="{{ route('profile', {'locale': locale, 'id': result.id }) }}">{{ result.name }}</a></td>
+							<td>{{ result.username }}</td>
+							<td>{{ result.books.count }}</td>
+							<td>{{ result.created_at }}</td>
+                            <td>
+{% if result.id != auth.getUser().id and result.id != superuser %}
+{% if result.trashed() %}
+                                <a class="btn btn-success" href="{{ route('enable-user', {'locale': locale, 'id': result.id }) }}"><i class="fas fa-check"></i> {{ 'base.enable'|trans }}</a>
+{% elseif result.id != superuser %}
+                                <a class="btn btn-danger" href="{{ route('delete-user', {'locale': locale, 'id': result.id }) }}"><i class="fas fa-trash"></i> {{ 'base.delete'|trans }}</a>
+{% if superuser == auth.getUser().id %}
+{% if result.role == 0 %}
+                                <a class="btn btn-info" href="{{ route('admin', {'locale': locale, 'id': result.id }) }}"><i class="fas fa-arrow-up"></i> {{ 'base.admin-up'|trans }}</a>
+{% else %}
+                                <a class="btn btn-warning" href="{{ route('admin', {'locale': locale, 'id': result.id }) }}"><i class="fas fa-arrow-down"></i> {{ 'base.admin-down'|trans }}</a>
+{% endif %}
+{% endif %}
+{% endif %}
+{% else %}
+                                {{ 'base.no-result'|trans }}
+{% endif %}
+                            </td>
+						</tr>
+{% endfor %}
+					</tbody>
+                </table>
+{% else %}
+                <p>{{ 'base.no-result'|trans }}</p>
+{% endif %}
+                {{ results.links()|raw }}
+				<p>{{ 'users.total'|trans }}: {{ results|length }}</p>
+			</div>
+{% endblock %}

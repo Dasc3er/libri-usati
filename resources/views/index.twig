@@ -1,0 +1,79 @@
+{% extends "layout.twig" %}
+{% import "macros/form.twig" as form %}
+
+{% block title %}{{ 'index.title'|trans }}{% endblock %}
+{% block content %}
+            <div class="jumbotron">
+				<div class="container text-center">
+					<h1><i class="fas fa-bookmark"></i> {{ 'index.header'|trans }}</h1>
+					<p>{{ 'index.text'|trans }}</p>
+				</div>
+
+                <div id="myCarousel" class="carousel slide margin-top" data-ride="carousel">
+                    <!-- Indicators -->
+                    <ol class="carousel-indicators">
+{% for element in carousel %}
+                        <li data-target="#myCarousel" data-slide-to="{{ loop.index - 1 }}"{% if loop.index == 1 %} class="active"{% endif %}></li>
+{% endfor %}
+                    </ol>
+
+                    <!-- Wrapper for slides -->
+                    <div class="carousel-inner" role="listbox">
+{% for element in carousel %}
+                        <div class="item{% if loop.index == 1 %} active{% endif %}">
+                            <img src="{{ img.getUrl(element.image) }}">
+{% if element.title or element.description %}
+
+                            <div class="carousel-caption">
+                                <h3>{{ element.title }}</h3>
+                                <p>{{ element.description }}</p>
+                            </div>
+{% endif %}
+                        </div>
+{% endfor %}
+                    </div>
+                </div>
+
+				<!-- Left and right controls
+				<a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+					<span class="icon-prev" aria-hidden="true"></span>
+					<span class="sr-only">{{ 'previous'|trans }}</span>
+				</a>
+				<a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+					<span class="icon-next" aria-hidden="true"></span>
+					<span class="sr-only">{{ 'next'|trans }}</span>
+				</a>-->
+			</div>
+			<hr>
+			<div class="container">
+				<div class="row">
+					<div class="col-xs-12 col-md-6">
+                        <h3>{{ 'index.latest-books'|trans }}:</h3>
+                        <ul>
+{% for book in books %}
+                            <li><a href="{{ route('book', {'locale': locale, 'id': book.id }) }}">{{ book.title }}</a></li>
+{% else %}
+        		            <p>{{ 'base.no-result'|trans }}</p>
+{% endfor %}
+                        </ul>
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+                        <h3>{{ 'index.latest-authors'|trans }}:</h3>
+                        <ul>
+{% for author in authors %}
+                            <li><a href="{{ route('author', {'locale': locale, 'id': author.id }) }}">{{ author.name }} {{ author.surname }}</a></li>
+{% else %}
+        		            <p>{{ 'base.no-result'|trans }}</p>
+{% endfor %}
+                        </ul>
+                    </div>
+				</div>
+			</div>
+{% endblock %}
+{% block scripts %}
+		<script>
+			$('.carousel .item').each(function() {
+				$(this).css('background-image','route('+$(this).find('img').attr('src')+')').css('background-repeat','repeat').find('img').css('visibility','hidden');
+			});
+		</script>
+{% endblock %}

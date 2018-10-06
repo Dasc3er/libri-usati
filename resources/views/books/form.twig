@@ -1,0 +1,66 @@
+{% extends "layout.twig" %}
+{% import "macros/form.twig" as form %}
+
+{% block title %}{{ 'books.form.title'|trans }}{% endblock %}
+{% block content %}
+			<div class="jumbotron">
+				<div class="container text-center">
+					<h1><i class="fas fa-edit"></i> {{ 'books.form.header'|trans }}</h1>
+					<p>{{ 'books.form.text'|trans }}</p>
+				</div>
+			</div>
+			<hr>
+			<div class="container">
+				<form action="{% if result %}{{ route('edit-book', {'locale': locale, 'id': result.id}) }}{% else %}{{ route('new-book', {'locale': locale}) }}{% endif %}" method="post" class="form-horizontal" role="form"  enctype="multipart/form-data">
+					{{ form.csrf_field(csrf) }}
+
+{% if result.image %}
+                    <div class="row">
+                        <div class="col-xs-12 col-md-3">
+                            <p><strong>{{ 'base.actual-image'|trans }}</strong>:</p>
+                            <img src="{{ asset('images/uploads/' ~ result.image) }}" class="img-responsive">
+                        </div>
+                        <div class="col-xs-12 col-md-9">
+{% endif %}
+                    {{ form.field({type: 'file', name: 'image', placeholder: 'base.image'|trans, value: result.image, form_horizontal: true}) }}
+
+                    {{ form.field({name: 'title', placeholder: 'base.title'|trans, value: result.title, required: true, autofocus: true, form_horizontal: true}) }}
+
+                    {{ form.field({type: 'number', name: 'isbn', placeholder: 'base.isbn'|trans, value: result.isbn, form_horizontal: true}) }}
+
+                    {{ form.field({type: 'number', name: 'price', placeholder: 'base.price'|trans, value: result.price, required: true, form_horizontal: true, step:'0.01'}) }}
+{% if result.image %}
+                        </div>
+                    </div>
+{% endif %}
+                    {{ form.field({type: 'select', name: 'authors[]', placeholder: 'base.authors'|trans, values: authors, value: result.authors, multiple: true, form_horizontal: true}) }}
+
+					{{ form.field({name: 'authorsAgain', label: 'base.authorsAgain'|trans, placeholder: 'base.authorsAgain.syntax'|trans, form_horizontal: true}) }}
+
+
+                    {{ form.field({type: 'select', name: 'subject', placeholder: 'base.subject'|trans, values: subjects, value: result.subject_id, form_horizontal: true, include_blank: true}) }}
+
+{% if auth.isAdmin() %}
+
+                    <div class="row">
+						<div class="pull-right">
+							<a class="btn btn-block btn-info" href="{{ route('new-subject', {'locale': locale}) }}"><i class="fas fa-plus"></i> {{ 'books.new-subject'|trans }}</a>
+						</div>
+					</div>
+                    <br><br>
+{% endif %}
+
+                    {{ form.field({type: 'textarea', name: 'description', placeholder: 'base.description'|trans, value: result.description, form_horizontal: true, class: 'editor'}) }}
+
+					<div class="row">
+						<div class="col-xs-12 col-md-3 col-md-push-9">
+							<button class="btn btn-block btn-success" type="submit" id="button"><i class="fas fa-check"></i> {{ 'base.save'|trans }}</button>
+						</div>
+					</div>
+				</form>
+			</div>
+{% endblock %}
+{% block scripts %}
+		<script src="{{ asset('js/tinymce.min.js') }}"></script>
+		<script src="{{ asset('js/tinymce.init.min.js') }}"></script>
+{% endblock %}

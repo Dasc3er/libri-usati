@@ -1,0 +1,46 @@
+<html>
+    <body>
+        <table width="100%" cellspacing="0" cellpadding="10" bgcolor="#4caf50">
+            <tr><td align="center">
+                <font face="verdana" color="white"><h1>
+                    {{ title }} - {{ 'base.site'|trans }}
+                </h1><br></font>
+            </td></tr>
+        </table>
+        <table width="100%" cellspacing="15" cellpadding="10" bgcolor="#f3f3f3">
+            <tr>
+                <td align="center">
+                    <table cellspacing="0" cellpadding="10" class="content" bgcolor="#ffffff">
+                        <tr>
+                            <td width="600"><font face="verdana">
+                                {% if name %}
+                                    <p>{{ 'email.email-dear'|trans()}} {{ name }}</p>
+                                {% endif %}
+                                {% for row in body %}
+                                    <p>{{ row|raw }}</p>
+                                {% endfor %}
+
+                                <p align="right" style="padding-top: 7px">{{ 'email.email-bye'|trans() }} {{ 'base.site'|trans }}</p>
+                            </font></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <hr>
+            <tr>
+                <td align="center">
+                    <table cellspacing="0" cellpadding="10" class="content">
+                        <tr>
+                            <td width="600"><font face="verdana" size="2">
+                                <p>{{ 'email.email-footer'|trans() }}</p>
+                            </font></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <table width="100%" cellspacing="0" cellpadding="10" bgcolor="#ffffff">
+            <tr><td align="center"><font face="verdana"><b>{{ title }} - {{ 'base.site'|trans }}</b></font></td></tr>
+        </table>
+    </body>
+</html>

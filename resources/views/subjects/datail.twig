@@ -1,0 +1,61 @@
+{% extends "layout.twig" %}
+
+{% block title %}{{ result.name }}{% endblock %}
+{% block content %}
+			<div class="jumbotron">
+				<div class="container text-center">
+					<h1><i class="fas fa-list"></i> {{ result.name }}</h1>
+{% if result.user_id == auth.getUser().id or auth.isAdmin() %}
+                    <hr>
+{% if delete %}
+					<p>{{ 'base.deleteQuestion'|trans }}</p>
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6 text-left">
+                            <a class="btn btn-success" href="{{ route('subject', {'locale': locale, 'id': result.id }) }}"><i class="fas fa-arrow-left"></i> {{ 'base.cancel'|trans }}</a>
+                        </div>
+                        <div class="col-xs-12 col-md-6 text-right">
+                            <form action="{{ route('delete-subject', {'locale': locale, 'id': result.id}) }}" method="post" role="form">
+                                {{ form.csrf_field(csrf) }}
+                                <button class="btn btn-danger" type="submit"><i class="fas fa-trash"></i> {{ 'base.delete'|trans }}</button>
+                            </form>
+                        </div>
+                    </div>
+{% else %}
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6 text-left">
+                            <a class="btn btn-info" href="{{ route('edit-subject', {'locale': locale, 'id': result.id }) }}"><i class="fas fa-pencil"></i> {{ 'base.edit'|trans }}</a>
+                        </div>
+                        <div class="col-xs-12 col-md-6 text-right">
+                            <a class="btn btn-danger" href="{{ route('delete-subject', {'locale': locale, 'id': result.id }) }}"><i class="fas fa-trash"></i> {{ 'base.delete'|trans }}</a>
+                        </div>
+                    </div>
+{% endif %}
+{% endif %}
+				</div>
+			</div>
+			<hr>
+			<div class="container">
+{% for book in books %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">{{ book.title }}, {{ 'base.property'|trans({':name': book.user.name}) }}</div>
+                     <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xs-12 col-md-3">
+                                <img src="{{ uploads.getUrl(book.image) }}" class="img-responsive">
+                            </div>
+                            <div class="col-xs-12 col-md-9">
+                                <p><strong>{{ 'base.authors'|trans }}</strong>: {% for row in book.authors %}{{ row.name }} {{ row.surname }}{%if not loop.last %}, {% else %}.{% endif %}{% else %}{{ 'base.no-authors'|trans }}.{% endfor %}
+                                <p><strong>{{ 'base.price'|trans }}</strong>: {{ book.price }} {{ 'base.euro'|trans }}.</p>
+                                <p>{{ 'base.isbn'|trans }}: {{ book.isbn }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+{% else %}
+                <p>{{ 'base.no-result'|trans }}</p>
+{% endfor %}
+
+                {{ results.links()|raw }}
+
+			</div>
+{% endblock %}

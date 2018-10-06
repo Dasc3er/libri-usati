@@ -1,0 +1,49 @@
+{% extends "layout.twig" %}
+
+{% block title %}{{ 'subjects.title'|trans }}{% endblock %}
+{% block content %}
+			<div class="jumbotron">
+				<div class="container text-center">
+					<h1><i class="fas fa-list"></i> {{ 'subjects.header'|trans }}</h1>
+					<p>{{ 'subjects.text'|trans }}</p>
+{% if auth.isAdmin() %}
+                    <p><a class="btn btn-success" href="{{ route('new-subject', {'locale': locale}) }}"><i class="fas fa-plus"></i> {{ 'base.new'|trans }}</a></p>
+{% endif %}
+				</div>
+			</div>
+			<hr>
+			<div class="container">
+{% if results is not empty %}
+                <table class="table table-hover table-striped">
+					<thead>
+						<tr>
+							<th>{{ 'base.name'|trans }}</th>
+{% if auth.isAdmin() %}
+
+							<th>{{ 'base.options'|trans }}</th>
+{% endif %}
+						</tr>
+					</thead>
+					<tbody>
+{% for result in results %}
+						<tr>
+                            <td><a href="{{ route('subject', {'locale': locale, 'id': result.id }) }}">{{ result.name }}</a></td>
+{% if auth.isAdmin() %}
+
+							<td>
+                                <a class="btn btn-info" href="{{ route('edit-subject', {'locale': locale, 'id': result.id }) }}"><i class="fas fa-pencil"></i> {{ 'base.edit'|trans }}</a>
+                                <a class="btn btn-danger" href="{{ route('delete-subject', {'locale': locale, 'id': result.id }) }}"><i class="fas fa-trash"></i> {{ 'base.delete'|trans }}</a>
+                            </td>
+{% endif %}
+						</tr>
+{% endfor %}
+{% else %}
+        				<p>{{ 'base.no-result'|trans }}</p>
+{% endif %}
+					</tbody>
+				</table>
+
+                {{ results.links()|raw }}
+
+			</div>
+{% endblock %}

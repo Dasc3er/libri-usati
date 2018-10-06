@@ -1,0 +1,42 @@
+{% extends "layout.twig" %}
+
+{% block title %}{{ 'administration.title'|trans }}{% endblock %}
+{% block content %}
+			<div class="jumbotron">
+				<div class="container text-center">
+					<h1><i class="fas fa-wrench"></i> {{ 'administration.header'|trans }}</h1>
+					<p>{{ 'administration.text'|trans }}</p>
+				</div>
+			</div>
+			<hr>
+			<div class="container">
+				<div class="row">
+                    <div class="col-xs-12 col-md-12">
+						<div class="panel panel-info text-center">
+							<div class="panel-heading"><i class="fas fa-eye fa-2x"></i> {{ 'base.options'|trans }}</div>
+							<div class="panel-body">
+								<ul class="nav nav-pills nav-stacked">
+                                    <li><a href="{{ route('users', {'locale': locale}) }}">{{ 'users.title'|trans }}</a></li>
+                                    <li><a href="{{ route('authors', {'locale': locale}) }}">{{ 'authors.title'|trans }}</a></li>
+                                    <li><a href="{{ route('subjects', {'locale': locale}) }}">{{ 'subjects.title'|trans }}</a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-xs-12 col-md-12">
+						<div class="panel panel-success text-center">
+							<div class="panel-heading"><i class="fas fa-cog fa-2x"></i> {{ 'base.infos'|trans }}</div>
+							<div class="panel-body">
+								<ul class="nav nav-pills nav-stacked">
+									<li><a href="{{ route('logins', {'locale': locale}) }}">{{ 'logins.title'|trans }}</a></li>
+{% if functions.visits %}
+									<li><a href="{{ route('visits', {'locale': locale}) }}">{{ 'visits.title'|trans }}</a></li>
+{% endif %}
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+{% endblock %}

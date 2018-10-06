@@ -1,0 +1,64 @@
+{% extends "layout.twig" %}
+
+{% block title %}{{ 'books.title'|trans }}{% endblock %}
+{% block content %}
+			<div class="jumbotron">
+				<div class="container text-center">
+					<h1><i class="fas fa-book "></i> {{ 'books.header'|trans }}</h1>
+					<p>{{ 'books.text'|trans }}</p>
+{% if auth.check() %}
+                    <p><a class="btn btn-success" href="{{ route('new-book', {'locale': locale}) }}"><i class="fas fa-plus"></i> {{ 'base.new'|trans }}</a></p>
+{% endif %}
+				</div>
+			</div>
+			<hr>
+			<div class="container">
+{% for result in results %}
+{% if loop.index is odd %}
+				<div class="row">
+{% endif %}
+					<div class="col-xs-12 col-md-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <a href="{{ route('book', {'locale': locale, 'id': result.id }) }}">
+                                    {{ result.title }}, {{ 'base.property'|trans({':name': result.user.name}) }}
+                                </a>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-3">
+                                        <img src="{{ uploads.getUrl(result.image) }}" class="img-responsive">
+                                    </div>
+                                    <div class="col-xs-12 col-md-9">
+                                        <p><strong>{{ 'base.authors'|trans }}</strong>: {% for row in result.authors %}{{ row.name }} {{ row.surname }}{%if not loop.last %}, {% else %}.{% endif %}{% else %}{{ 'base.no-authors'|trans }}.{% endfor %}
+                                        <p><strong>{{ 'base.price'|trans }}</strong>: {{ result.price }} {{ 'base.euro'|trans }}.</p>
+{% if result.isbn %}
+                                        <p>{{ 'base.isbn'|trans }}: {{ result.isbn }}</p>
+{% endif %}
+
+                                    </div>
+                                </div>
+
+{% if result.user_id == auth.getUser().id or auth.isAdmin() %}
+                                <hr>
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-6">
+                                        <a class="btn btn-info" href="{{ route('edit-book', {'locale': locale, 'id': result.id }) }}"><i class="fas fa-pencil"></i> {{ 'base.edit'|trans }}</a>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6">
+                                        <a class="btn btn-danger pull-right" href="{{ route('delete-book', {'locale': locale, 'id': result.id }) }}"><i class="fas fa-trash"></i> {{ 'base.delete'|trans }}</a>
+                                    </div>
+                                </div>
+{% endif %}
+                            </div>
+                        </div>
+					</div>
+{% if loop.index is even or loop.last %}
+				</div>
+{% endif %}
+{% else %}
+        		<p>{{ 'base.no-result'|trans }}</p>
+{% endfor %}
+                {{ results.links()|raw }}
+			</div>
+{% endblock %}

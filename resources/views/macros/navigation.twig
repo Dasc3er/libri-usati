@@ -1,0 +1,31 @@
+{% macro menu(list) %}
+    {% import _self as self %}
+
+    {% for key, value in list %}
+        {% if users is iterable %}
+            {% set title = key %}
+            {% set path = key %}
+            {% set children = value %}
+        {% else %}
+            {% set path = value %}
+            {% set title = value %}
+            {% set children = [] %}
+        {% endif %}
+        {% set title = (path ~ '.menu')|trans %}
+        {% set has_children = children|length != 0 %}
+
+        <li class="nav-item {% if state %}active{% endif %} {% if has_children %}dropdown{% endif %}">
+            <a href="{{ route(path) }}" class="nav-link {% if has_children %}dropdown-toggle{% endif %}" {% if has_children %}data-toggle="dropdown"{% endif %}>
+                {{ title }}
+                {% if has_children %} <b class="caret"></b>{% endif %}
+            </a>
+
+		{% if has_children %}
+            <ul class="dropdown-menu">
+                {{ self.menu(children) }}
+            </ul>
+		{% endif %}
+
+        </li>
+	{% endfor %}
+{% endmacro %}

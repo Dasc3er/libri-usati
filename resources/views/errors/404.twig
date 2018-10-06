@@ -1,0 +1,11 @@
+{% extends "layout.twig" %}
+
+{% block title %}{{ 'errors.404.title'|trans }}{% endblock %}
+{% block content %}
+            <div class="container text-center">
+                <span class="help">{{ 'errors.404.header'|trans }}</span>
+                <h2>{{ 'errors.404.title'|trans }}</h2>
+                <p>{{ 'errors.404.text'|trans }}</p>
+                <p><a href="{{ route('index', {'locale': locale}) }}" class="btn btn-success"><i class="fas fa-arrow-left"></i> {{ 'base.back-home'|trans }}</a></p>
+            </div>
+{% endblock %}

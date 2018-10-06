@@ -1,0 +1,60 @@
+{% extends "layout.twig" %}
+{% import "macros/form.twig" as form %}
+
+{% block title %}{{ 'login.title'|trans }}{% endblock %}
+{% block content %}
+{% if time %}
+			<div class="jumbotron yellow no-margin-bottom">
+				<div class="container">
+					<h2>{{ 'warning'|trans }}</h2>
+					<p>{{ 'login.wait'|trans({'%minutes%': minutes, '%seconds%': seconds}) }}</p>{% autoescape false %}
+					<p>{{ 'login.time'|trans({'%pre%': '<span id="time">', '%time%': time, '%after%': '</span>'}) }}</p>{% endautoescape %}
+				</div>
+			</div>
+			<script>
+				setInterval(function() {
+					if (parseInt($("#time").text()) > 0) {
+						$("input").prop("disabled", true);
+						$(".btn").addClass("hidden");
+						$("#time").html(parseInt($("#time").text()) - 1);
+					} else {
+						$("input").prop("disabled", false);
+						$(".btn").removeClass("hidden");
+					}
+				}, 1000, 1);
+			</script>
+{% endif %}
+			<div class="jumbotron">
+				<div class="container text-center">
+					<h1><i class="fas fa-user"></i> {{ 'login.header'|trans }}</h1>
+					<p>{{ 'login.text'|trans }}</p>
+				</div>
+			</div>
+			<div class="container">
+				<form action="" method="post" class="center-form" role="form">
+					{{ form.csrf_field(csrf) }}
+
+					{{ form.field({name: 'email', placeholder: 'base.email'|trans, type: 'email', required: true, autofocus: true}) }}
+
+					{{ form.field({name: 'password', placeholder: 'base.password'|trans, type: 'password', required: true}) }}
+
+					<div class="row">
+						<div class="col-xs-12 col-md-3 col-md-push-9">
+							<button class="btn btn-block btn-primary" type="submit" id="button"><i class="fas fa-sign-in"></i> {{ 'login.button'|trans }}</button>
+						</div>
+						<div class="col-xs-12 col-md-9 col-md-pull-3">
+							<p class="text-center">
+								<span class="fa-stack fa-lg"><i class="fas fa-circle fa-stack-2x"></i><i class="fas fa-unlock-alt fa-stack-1x fa-inverse"></i></span> {{ 'retrieve.question'|trans }} <a href="{{ route('password.request', {'locale': locale}) }}">{{ 'retrieve.suggestion'|trans }}</a>
+							</p>
+{% if functions.register %}
+
+							<p class="text-center">
+								<span class="fa-stack fa-lg"><i class="fas fa-circle fa-stack-2x"></i><i class="fas fa-check fa-stack-1x fa-inverse"></i></span>
+								<strong>{{ 'register.question'|trans }} <a href="{{ route('register', {'locale': locale}) }}">{{ 'register.suggestion'|trans }}</a></strong>
+							</p>
+{% endif %}
+						</div>
+					</div>
+				</form>
+			</div>
+{% endblock %}

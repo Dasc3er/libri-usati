@@ -1,0 +1,30 @@
+{% extends "layout.twig" %}
+{% import "macros/form.twig" as form %}
+
+{% block title %}{{ 'contacts.title'|trans }}{% endblock %}
+{% block content %}
+			<div class="jumbotron">
+				<div class="container text-center">
+					<h1><i class="fas fa-list"></i> {{ 'contacts.header'|trans }}</h1>
+					<p>{{ 'contacts.text'|trans }}</p>
+				</div>
+			</div>
+			<hr>
+			<div class="container">
+				<form action="{{ route('contacts', {'locale': locale}) }}" method="post" class="form-horizontal" role="form">
+					{{ form.csrf_field(csrf) }}
+
+                    {{ form.field({type: 'textarea', name: 'description', placeholder: 'base.description'|trans, value: result.description, required: true, form_horizontal: true, class: 'editor'}) }}
+
+					<div class="row">
+						<div class="col-xs-12 col-md-3 col-md-push-9">
+							<button class="btn btn-block btn-success" type="submit" id="button"><i class="fas fa-check"></i> {{ 'base.send'|trans }}</button>
+						</div>
+					</div>
+				</form>
+			</div>
+{% endblock %}
+{% block scripts %}
+		<script src="{{ asset('js/tinymce.min.js') }}"></script>
+		<script src="{{ asset('js/tinymce.init.min.js') }}"></script>
+{% endblock %}
